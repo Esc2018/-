@@ -51,12 +51,12 @@ export default {
 };
 </script>
 <style scoped>
-@import "../../public/iconfont/iconfont.css";
+@import "../public/iconfont/iconfont.css";
 
 .footer {
   margin-top: 15px;
   padding-top: 20px;
-  background-color: rgb(235, 235, 235);
+  background-color: rgb(185, 185, 185);
 }
 .box {
   width: 790px;

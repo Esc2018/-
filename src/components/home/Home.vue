@@ -13,14 +13,14 @@
 </template>
 
 <script>
-import Header from "./Header";
+import Header from "../Header";
 import Recomd from "./recommend";
 import Banner from "./banner";
 import Hot from "./hotRec";
 import perRce from "./perRecom";
 import newDisc from "./newdisc";
 import List from "./list";
-import Footer from "./footer";
+import Footer from "../Footer";
 export default {
   data() {
     return {};
@@ -43,5 +43,6 @@ export default {
 <style scoped>
 body {
   position: relative;
+  width: 100%;
 }
 </style>

@@ -1,23 +1,21 @@
 <template>
   <div id="app">
-    <Home></Home>
     <router-view />
   </div>
 </template>
 
 <script>
-import Home from "./components/home/Home"
 export default {
   name: "App",
-  components: {
-    Home
-  }
+  components: {},
+  methods: {}
 };
 </script>
 
 <style>
-  @import './public/css/normalize.css';
-  body{
-    height: 1500px;
-  }
+@import "./public/css/normalize.css";
+body {
+  height: 1500px;
+  background-color: rgb(233, 233, 233);
+}
 </style>

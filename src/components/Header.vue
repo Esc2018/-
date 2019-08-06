@@ -1,17 +1,23 @@
 <template>
   <div class="header">
     <div class="box">
-      <h1 class="logo">
-        <img src="../../assets/logo.png" alt />
-        <a href="#">网易云音乐</a>
-      </h1>
+      <router-link to="/">
+        <h1 class="logo">
+          <img src="../assets/logo.png" alt />
+          <a href="#">网易云音乐</a>
+        </h1>
+      </router-link>
 
       <ul class="nav">
         <li>
-          <a href>发现音乐</a>
+          <router-link to="/">
+            <a href>发现音乐</a>
+          </router-link>
         </li>
         <li>
-          <a href>我的音乐</a>
+          <router-link to="music">
+            <a href>我的音乐</a>
+          </router-link>
         </li>
         <li>
           <a href>朋友</a>
@@ -28,7 +34,7 @@
       </ul>
 
       <!-- 搜索框 -->
-      <el-form ref="form" size="mini">
+      <el-form ref="form" size="mini" @submit.native.prevent>
         <el-form-item>
           <el-input
             size="small"
@@ -57,14 +63,16 @@
       <div class="demo-type avator" ref="avator">
         <el-dropdown>
           <div>
-            <el-avatar :src="userImg"></el-avatar>
+            <el-avatar :src="userInfo.userImg"></el-avatar>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>黄金糕</el-dropdown-item>
-            <el-dropdown-item>狮子头</el-dropdown-item>
-            <el-dropdown-item>螺蛳粉</el-dropdown-item>
-            <el-dropdown-item>双皮奶</el-dropdown-item>
-            <el-dropdown-item>蚵仔煎</el-dropdown-item>
+            <el-dropdown-item>我的主页</el-dropdown-item>
+            <el-dropdown-item>我的消息</el-dropdown-item>
+            <el-dropdown-item>我的等级</el-dropdown-item>
+            <el-dropdown-item>VIP会员</el-dropdown-item>
+            <el-dropdown-item>个人设置</el-dropdown-item>
+            <el-dropdown-item>实名认证</el-dropdown-item>
+            <el-dropdown-item @click.native="exit">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -102,7 +110,6 @@
 </template>
 
 <script>
-const axios = require("axios");
 export default {
   data() {
     var checkUserName = (rule, value, callback) => {
@@ -125,26 +132,26 @@ export default {
         username: [{ validator: checkUserName, trigger: "blur" }],
         password: [{ validator: validatePass, trigger: "blur" }]
       },
-      userInfo: [],
-      userImg:
-        "http://p4.music.126.net/MHqYUiaS1xJ0DzY6u3P6zQ==/109951163850262587.jpg"
+      userInfo: {
+        userImg: ""
+      }
     };
   },
 
   components: {},
 
+  created() {
+    if (localStorage.getItem("userName") != null) {
+      this.ruleForm.username = localStorage.getItem("userName");
+      this.ruleForm.password = localStorage.getItem("password");
+      this.submitForm(this.ruleForm);
+    }
+    // console.log("state:", this.$store.state);
+  },
+
   methods: {
     submit() {
-      axios
-        .get("http://localhost:3000/search", {
-          params: {
-            keywords: this.ipt
-          }
-        })
-        .then(function(res) {
-          console.log(res);
-        });
-      console.log("提交！");
+      this.$router.push({ name: "search", params: { keywords: this.ipt } });
     },
 
     login() {
@@ -161,9 +168,12 @@ export default {
           password: password
         })
         .then(function(response) {
-          console.log(response);
+          // console.log(response);
+          localStorage.setItem("userName", username);
+          localStorage.setItem("password", password);
+          localStorage.setItem("userid", response.data.profile.userId);
           _this.userInfo.userImg = response.data.profile.avatarUrl;
-          // console.log(_this.$refs.login);
+          _this.$store.dispatch("getParamSync", response.data.profile.userId);
           _this.$refs.login.style.display = "none";
           _this.$refs.back.style.display = "none";
           _this.$refs.avator.style.display = "block";
@@ -172,8 +182,29 @@ export default {
           console.log(error);
         });
     },
+
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+
+    // 退出登录
+    exit() {
+      let _this = this;
+      this.$axios
+        .post("api/logout")
+        .then(function(response) {
+          localStorage.clear();
+          _this.$store.dispatch("getParamSync", 0);
+          _this.ruleForm.username = "";
+          _this.ruleForm.password = "";
+          _this.userInfo.userImg = "";
+          _this.$refs.login.style.display = "block";
+          _this.$refs.avator.style.display = "none";
+          _this.$router.push({ path: "/" });
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
 
     // 点击X返回首页
@@ -188,6 +219,7 @@ export default {
   /* width: 100%; */
   height: 70px;
   background-color: #242424;
+  border-bottom: 4px solid #c20c0c;
 }
 .box {
   overflow: hidden;
@@ -220,19 +252,23 @@ export default {
 }
 .nav > li {
   float: left;
-  width: 80px;
+  width: 85px;
   height: 70px;
-  padding: 27px 5px;
+  padding: 0 5px;
   text-align: center;
 }
-.nav > li:first-of-type {
+.nav > li a.router-link-exact-active {
   background-color: #000;
 }
 .nav > li:hover {
   background-color: #000;
 }
 .nav > li a {
-  color: rgb(207, 207, 207);
+  display: block;
+  width: 100%;
+  height: 100%;
+  line-height: 70px;
+  color: rgb(255, 255, 255);
 }
 
 .el-form {
@@ -256,6 +292,10 @@ export default {
 }
 .avator:hover {
   cursor: pointer;
+}
+.el-dropdown-menu {
+  width: 120px;
+  text-align: center;
 }
 
 .el-button-group .el-button--primary {

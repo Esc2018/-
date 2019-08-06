@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 榜单  -->
 <template>
   <div class="listBox">
     <div class="top">
@@ -316,10 +316,10 @@ ol {
 }
 ol > li {
   position: relative;
-  width: 185px;
+  width: 210px;
   border-bottom: 1px solid rgb(145, 145, 145);
   padding: 5px 0;
-  font-size: 13px;
+  font-size: 12px;
 }
 ol > li:hover > a {
   text-decoration: underline;
@@ -339,11 +339,18 @@ ol > li .box {
   display: none;
   position: absolute;
   top: 3px;
-  right: 0;
+  right: -5px;
+}
+ol > li > a{
+  display: inline-block;
+  width: 110px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 ol > li i {
   float: right;
-  margin-right: 5px;
+  margin-right: 1px;
 }
 .smore {
   height: 32px;
