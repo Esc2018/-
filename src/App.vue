@@ -10,6 +10,7 @@ export default {
   components: {},
   methods: {}
 };
+
 </script>
 
 <style>
