@@ -46,6 +46,9 @@ export default {
 .el-carousel__item:nth-child(2n + 1) {
   background-color: #d3dce6;
 }
+.el-carousel--horizontal{
+  overflow: hidden;
+}
 
 img {
   width: 100%;
